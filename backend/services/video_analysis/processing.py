@@ -1,11 +1,13 @@
 import numpy as np
 import time
 import cv2
+from scipy.signal import argrelextrema
 
 
 class Analyzer():
 	def __init__(self):
-		self.avg_bpm = self.cnt = self.fps = self.bpm = 0
+		self.avg_bpm = self.cnt = self.fps = self.bpm = self.breathes = 0
+		self.up = self.down = -1
 		self.index = 1
 		self.incoming_frame = self.outgoing_frame = np.zeros((10, 10))
 		self.face = False
@@ -16,11 +18,11 @@ class Analyzer():
 		self.t_times = []
 		self.freqs = []
 		self.fft = []
-		self.breaths = []
 		self.face_rect = []
-		self.previous__frame = None
-		self.cascade = cv2.CascadeClassifier("/home/ghostman/Documents/github/contributed/Medi-Vision/backend/services/video_analysis/frontface_cascade.xml")
+		self.previous_frame = None
+		self.cascade = cv2.CascadeClassifier("frontface_cascade.xml")
 		self.last_fft_center = np.array([0, 0])
+		self.hsv = None
 		self.t0 = time.time()
 
 	# shift zero frequency to center
@@ -139,7 +141,49 @@ class Analyzer():
 			self.outgoing_frame[y:y + h, x:x + w] = cv2.merge([R, G, B])
 			time_interval = (self.buffer_size - length) / self.fps
 			display = "%0.1f bpm, %0.0f seconds" % (self.bpm, time_interval)
-			if self.bpm > 68 and self.bpm < 100:
+			if self.bpm > 68 and self.bpm < 110:
+				# Breath Rate (detecting movement of chest)
+				if self.cnt == 0:
+					self.previous_frame = cv2.cvtColor(
+						self.incoming_frame, cv2.COLOR_BGR2GRAY
+					)
+					self.hsv = np.zeros_like(self.incoming_frame)
+					self.hsv[..., 1] = 255
+				else:
+					next_frame = cv2.cvtColor(self.incoming_frame, cv2.COLOR_BGR2GRAY)
+					flow = cv2.calcOpticalFlowFarneback(
+						self.previous_frame, next_frame, 0.5, 3, 15, 3, 5, 1.2, 0
+					)
+					mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
+					self.hsv[..., 0] = ang * 180 / np.pi / 2
+					self.hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
+
+					maxima = argrelextrema(self.hsv, np.greater)
+					minima = argrelextrema(self.hsv, np.less)
+
+					mean1, mean2 = 0, 0
+					for x in maxima[1]:
+						mean1 += x
+					mean1 = mean1 / len(maxima[1])
+					for x in minima[1]:
+						mean2 += x
+					mean2 = mean2 / len(minima[1])
+
+					if mean1 > mean2:
+						if self.up == -1:
+							self.up = 1
+						elif self.down == 1:
+							self.up = 1
+							self.dowm = 0
+							self.breathes += 1
+					elif mean1 < mean2:
+						if self.up == 1:
+							self.up = 0
+							self.down = 1
+							self.breathes += 1
+
+					self.previous_frame = next_frame
+
 				self.cnt += 1
 				self.avg_bpm = (self.avg_bpm * (self.cnt - 1) + self.bpm) / self.cnt
 			cv2.putText(

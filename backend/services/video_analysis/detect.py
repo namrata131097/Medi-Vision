@@ -27,11 +27,13 @@ class Detect():
 		c = cv2.waitKey(10) & 255
 		if c == 27:
 			self.capture.shutdown()
-		if self.analyzer.cnt == 40:
+		if self.analyzer.cnt == 31:
 			flag = False
 			self.capture.shutdown()
-			print self.analyzer.avg_bpm
-			return self.analyzer.avg_bpm
+			# print self.analyzer.avg_bpm
+			# print self.analyzer.breathes
+			# return beats per minute and breath rate per minute
+			return self.analyzer.avg_bpm, self.analyzer.breathes
 
 
 if __name__ == '__main__':
