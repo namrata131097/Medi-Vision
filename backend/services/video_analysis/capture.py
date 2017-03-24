@@ -20,5 +20,5 @@ class Capture():
 		return frame
 
 	def shutdown(self):
-		self.camera.release()
+		self.capture.release()
 		cv2.destroyAllWindows()
