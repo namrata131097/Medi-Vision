@@ -1,7 +1,6 @@
 import numpy as np
 import time
 import cv2
-import datetime
 
 
 class Analyzer():
@@ -30,7 +29,15 @@ class Analyzer():
 	# get absolute coordinates of forehead
 	# head_rel_x and head_rel_y => relative coordinates
 	def get_forehead_coords(self, head_rel_x, head_rel_y, head_w, head_h):
-		pass
+		try:
+			x, y, w, h = self.face_rect
+		except:
+			# Boo :P
+			x = y = w = h = 0
+		# making PEP8 compilant :D
+		return [int(x + w * head_rel_x - (w * head_w / 2.0)),
+										int(y + h * head_rel_y - (h * head_h / 2.0)),
+										int(w * head_w), int(h * head_h)]
 
 	def get_mean_intensity(self, boundary_coords):
 		pass
