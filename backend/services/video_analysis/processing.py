@@ -17,10 +17,15 @@ class Analyzer():
 		self.previous__frame = None
 		self.cascade = cv2.CascadeClassifier("frontface_cascade.xml")
 		self.last_fft_center = np.array([0, 0])
+		self.t0 = time.time()
 
 	# shift zero frequency to center
-	def shift(self, detected):
-		pass
+	def fft_shift(self, detected_forehead):
+		x, y, w, h = detected_forehead
+		center = np.array([x + 0.5 * w, y + 0.5 * h])  # approximation
+		shift = np.linalg.norm(center - self.last_fft_center)
+		self.last_fft_center = center
+		return shift
 
 	# get absolute coordinates of forehead
 	# head_rel_x and head_rel_y => relative coordinates
