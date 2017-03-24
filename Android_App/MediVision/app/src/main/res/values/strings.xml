@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MediVision</string>
+    <string-array name="gender">
+        <item>male</item>
+        <item>female</item>
+    </string-array>
+    <string name="action_settings">Settings</string>
+</resources>
