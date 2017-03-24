@@ -27,7 +27,6 @@ class Analyzer():
 		return shift
 
 	# get absolute coordinates of forehead
-	# head_rel_x and head_rel_y => relative coordinates
 	def get_forehead_coords(self, head_rel_x, head_rel_y, head_w, head_h):
 		try:
 			x, y, w, h = self.face_rect
@@ -51,4 +50,97 @@ class Analyzer():
 
 	# all the main calculations will be done here
 	def analyze(self):
-		pass
+		self.times.append(time.time() - self.t0)
+		self.outgoing_frame = self.incoming_frame
+		# Well, doesn't everyone like grayscale? :D
+		grayscale = cv2.cvtColor(self.incoming_frame, cv2.COLOR_BGR2GRAY)
+		# contrasting the image
+		grayscale = cv2.equalizeHist(grayscale)
+		if self.find:
+			self.buffer_data = self.times = []
+			detected_faces = list(self.cascade.detectMultiScale(
+				grayscale,
+				1.3,
+				4,
+				cv2.CASCADE_SCALE_IMAGE,
+				(50, 50)
+			))
+			if len(detected_faces):
+				# sorted accoding to max area of detected face
+				detected_faces.sort(key=lambda z: z[-1] * z[-2])
+				if self.shift(detected_faces[-1] > 10):
+					self.face_rect = detected_faces[-1]
+					self.face = True
+			forehead = self.get_forehead_coords(0.5, 0.2, 0.25, 0.15)
+			try:
+				x, y, w, h = self.face_rect
+			except:
+				x = y = w = h = 0
+			cv2.rectangle(self.outgoing_frame, (x, y), (x + w, y + h), (0, 255, 0), 1)
+			try:
+				x, y, w, h = forehead
+			except:
+				x = y = w = h = 0
+			cv2.rectangle(self.outgoing_frame, (x, y), (x + w, y + h), (255, 0, 0), 1)
+			return
+
+		forehead = self.get_forehead_coords(0.5, 0.2, 0.25, 0.15)
+		try:
+			x, y, w, h = forehead
+		except:
+			x = y = w = h = 0
+		cv2.rectangle(self.outgoing_frame, (x, y), (x + w, y + h), (255, 0, 0), 1)
+
+		mean_value = self.get_mean_intensity(forehead)
+		self.buffer_data.append(mean_value)
+		length = len(self.buffer_data)
+		data = np.array(self.buffer_data)
+		# stabilizing ...
+		if length > 10:
+			self.fps = float(length) / (self.times[-1] - self.times[0])
+			even_intervals = np.linspace(self.times[0], self.times[-1], length)
+			# hamming is good for DTFT
+			interpolation = np.hamming(length) * np.interp(
+				even_intervals, self.times, data
+			)
+			# ^, PEP8 compilant :D
+			interpolation -= np.mean(interpolation)
+			variation = np.fft.rftt(interpolation)
+			phase = np.angle(variation)
+			self.fft = np.abs(variation)
+			self.freqs = float(self.fps) / length * np.arange(length / 2 + 1)
+			freqs = 60. * self.freqs
+			self.index = np.where((freqs > 50) & (freqs < 240))
+
+			pruned = self.fft[self.index]
+			phase = phase[self.index]
+
+			self.freqs = freqs[self.index]
+			self.fft = pruned
+
+			temp_index = np.argmax(pruned)
+			t = (np.sin(phase[temp_index]) + 1.0) / 2
+			t = 0.9 * t + 0.1
+			theta1, theta2 = t, 1 - t
+
+			self.bpm = self.freqs[temp_index]
+			self.index += 1
+
+			R = theta1 * self.incoming_frame[y:y + h, x:x + w, 0]
+			G = theta1 * self.incoming_frame[y:y + h, x:x + w, 1] + \
+				theta2 * grayscale[y:y + h, x:x + w]
+			B = theta1 * self.incoming_frame[y:y + h, x:x + w, 2]
+			self.outgoing_frame[y:y + h, x:x + w] = cv2.merge([R, G, B])
+			time_interval = (self.buffer_size - length) / self.fps
+			display = "%0.1f bpm, %0.0f seconds" % (self.bpm, time_interval)
+			if self.bpm > 68 and self.bpm < 100:
+				self.cnt += 1
+				self.avg_bpm = (self.avg_bpm * (self.cnt - 1) + self.bpm) / self.cnt
+			cv2.putText(
+				self.outgoing_frame,
+				display,
+				(x - w / 2, y),
+				cv2.FONT_HERSHEY_PLAIN,
+				1,
+				(0, 0, 255)
+			)
