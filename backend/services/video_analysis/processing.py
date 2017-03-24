@@ -39,8 +39,15 @@ class Analyzer():
 										int(y + h * head_rel_y - (h * head_h / 2.0)),
 										int(w * head_w), int(h * head_h)]
 
+	# I hope name is enough to explain what function does :P (I assume)
 	def get_mean_intensity(self, boundary_coords):
-		pass
+		x, y, w, h = boundary_coords
+		# stripping pixel frame of forehead
+		forehead_frame = self.incoming_frame[y:y + h, x:x + w, :]
+		I0 = np.mean(forehead_frame[:, :, 0])
+		I1 = np.mean(forehead_frame[:, :, 1])
+		I2 = np.mean(forehead_frame[:, :, 2])
+		return (I0 + I1 + I2) / 3
 
 	# all the main calculations will be done here
 	def analyze(self):
