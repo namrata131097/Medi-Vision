@@ -90,8 +90,8 @@ public class Reminder extends AppCompatActivity {
                 //Log.d(TAG, "Add a new task");
                 final EditText taskEditText = new EditText(this);
                 AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("Add a new task")
-                        .setMessage("What do you want to do next?")
+                        .setTitle("Add New Medicine")
+                        .setMessage("Name: DAY ,EVENING, NIGHT")
                         .setView(taskEditText)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
