@@ -50,4 +50,7 @@ When a person has a checkup via android app, the details of the checkup are stor
     * Research Paper implemented - http://www.ijser.in/archives/v3i6/IJSER15287.pdf
     * This paper follows the ABCD rule to detect chances of a lesion turning into cancer (read the paper for more details)
 
+3. Eye Cataract Detection
+    * Research paper - https://goo.gl/xgRM0s
+
 > Read the papers for mathematical caluclations explanations
