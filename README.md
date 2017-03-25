@@ -14,6 +14,7 @@ An intelligent system to help common man via easing the process of getting healt
 
 1. Breathing rate and heart rate monitoring from your live feed. (accurate upto 90%)
 2. Checking for cancer from a snapshot of patch on skin. (accurate upto 70-80% without ML !)
+3. Cataract Eye test => (average accuracy on sample data)
 
 ## RestDB.io
 
@@ -48,5 +49,8 @@ When a person has a checkup via android app, the details of the checkup are stor
 2. Skin Cancer Detection
     * Research Paper implemented - http://www.ijser.in/archives/v3i6/IJSER15287.pdf
     * This paper follows the ABCD rule to detect chances of a lesion turning into cancer (read the paper for more details)
+
+3. Eye Cataract Detection
+    * Research paper - https://goo.gl/xgRM0s
 
 > Read the papers for mathematical caluclations explanations

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.rishab.medivision.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="136dp"
+        android:layout_height="106dp"
+        app:srcCompat="@drawable/logo"
+        tools:layout_editor_absoluteX="124dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:layout_marginBottom="14dp"
+        android:layout_above="@+id/imageView4"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="44dp"
+        android:onClick="open_reminder"
+        app:srcCompat="@drawable/pills"
+        tools:layout_editor_absoluteY="205dp"
+        tools:layout_editor_absoluteX="24dp"
+        android:layout_above="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="44dp"
+        />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_alignBottom="@+id/imageView3"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="48dp"
+        app:srcCompat="@drawable/stethoscope"
+        tools:layout_editor_absoluteY="191dp"
+        tools:layout_editor_absoluteX="258dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reminders"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="305dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginStart="33dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:onClick="open_reminder"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/imageView4"
+        android:layout_alignRight="@+id/imageView4"
+        android:layout_below="@+id/imageView4"
+        android:text="Check Up"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="260dp"
+        tools:layout_editor_absoluteY="301dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textView3"
+        android:layout_alignRight="@+id/textView3"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="69dp"
+        android:onClick="open_appoint"
+        android:text="Appointment" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_alignEnd="@+id/imageView3"
+        android:layout_alignRight="@+id/imageView3"
+        android:onClick="open_register"
+        android:text="Register" />
+
+</RelativeLayout>
