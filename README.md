@@ -14,6 +14,7 @@ An intelligent system to help common man via easing the process of getting healt
 
 1. Breathing rate and heart rate monitoring from your live feed. (accurate upto 90%)
 2. Checking for cancer from a snapshot of patch on skin. (accurate upto 70-80% without ML !)
+3. Cataract Eye test => (average accuracy on sample data)
 
 ## RestDB.io
 
