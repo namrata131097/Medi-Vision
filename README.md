@@ -2,7 +2,7 @@
 
 An intelligent system to help common man via easing the process of getting health checkups remotely and maintaing prescribed drugs usage. We've also try to regulate the waiting queue at receptions in hospitals, and have also tried to reach out to Big Data sector. Several health checkups have been made available with the help of **Computer Vision**.
 
-> We'll be explaining our tech stack and use of each below.
+> We'll be explaining our tech stack and use of each and every thing below.
 
 ## Tech Stack
 
